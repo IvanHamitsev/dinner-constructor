@@ -1,14 +1,16 @@
 package ru.practicum.dinner;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
 
-    static DinnerConstructor dc;
+    static DinnerConstructor dinnerConstructor; // стандартное имя dc малоинформативно
     static Scanner scanner;
 
     public static void main(String[] args) {
-        dc = new DinnerConstructor();
+
+        dinnerConstructor = new DinnerConstructor(true);
         scanner = new Scanner(System.in);
 
         while (true) {
@@ -40,8 +42,14 @@ public class Main {
         String dishType = scanner.nextLine();
         System.out.println("Введите название блюда:");
         String dishName = scanner.nextLine();
+        // хочется изменяемую строку без тёмных приёмов рефлексии
+        StringBuilder message = new StringBuilder();
 
-        // добавьте новое блюдо
+        if (dinnerConstructor.addNewDish(dishType, dishName, message)) {
+            System.out.println("Блюдо успешно добавлено.");
+        } else {
+            System.out.println(message);
+        }
     }
 
     private static void generateDishCombo() {
@@ -53,13 +61,27 @@ public class Main {
 
         System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
         String nextItem = scanner.nextLine();
-
+        ArrayList<String> typesList = new ArrayList<>();
         //реализуйте ввод типов блюд
         while (!nextItem.isEmpty()) {
-
+            if (!dinnerConstructor.isDishType(nextItem)) {
+                System.out.println("Такого типа блюда нет, повторите ввод");
+            } else {
+                typesList.add(nextItem);
+            }
+            nextItem = scanner.nextLine();
         }
-
-        // сгенерируйте комбинации блюд и выведите на экран
-
+        ArrayList<ArrayList<String>> resultMenu = new ArrayList<>();
+        StringBuilder message = new StringBuilder();
+        if (dinnerConstructor.generateDishCombo(numberOfCombos, typesList, resultMenu, message)) {
+            int i = 1;
+            for (ArrayList<String> menu : resultMenu) {
+                System.out.println("Комбо " + (i++));
+                System.out.println(menu);
+            }
+            System.out.println("");
+        } else {
+            System.out.println(message);
+        }
     }
 }
