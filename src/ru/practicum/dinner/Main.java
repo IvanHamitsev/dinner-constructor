@@ -37,6 +37,14 @@ public class Main {
         System.out.println("3 - Выход");
     }
 
+    private static int parseInt(String str, int defVal) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException exception) {
+            return defVal;
+        }
+    }
+
     private static void addNewDish() {
         System.out.println("Введите тип блюда:");
         String dishType = scanner.nextLine();
@@ -56,8 +64,16 @@ public class Main {
         System.out.println("Начинаем конструировать обед...");
 
         System.out.println("Введите количество наборов, которые нужно сгенерировать:");
-        int numberOfCombos = scanner.nextInt();
-        scanner.nextLine();
+        String strOfCombos = scanner.nextLine();
+
+        // отличим положительное число от слов
+        while (0 >= parseInt(strOfCombos, 0) ) {
+            System.out.println("Некорректное число наборов, повторите ввод!");
+            strOfCombos = scanner.nextLine();
+        }
+
+        // теперь strOfCombos точно корректное число
+        int numberOfCombos = Integer.parseInt(strOfCombos);
 
         System.out.println("Вводите типы блюда, разделяя символом переноса строки (enter). Для завершения ввода введите пустую строку");
         String nextItem = scanner.nextLine();
